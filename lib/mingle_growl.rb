@@ -2,6 +2,19 @@ require 'rubygems'
 require 'mingle_events'
 require 'fileutils'
 
+class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
+  require 'ruby_gntp'
+
+  def process_event(event)
+    GNTP.notify({
+                  :app_name => "Mingle Growl",
+                  :title    => event.title,
+                  :text     => event.card_number,
+                  :icon     => "http://www.hatena.ne.jp/users/sn/snaka72/profile.gif",
+                })
+  end
+end
+
 # specify mingle access
 mingle_access = MingleEvents::MingleBasicAuthAccess.new(
   'http://localhost:8080',
@@ -11,7 +24,8 @@ mingle_access = MingleEvents::MingleBasicAuthAccess.new(
 
 # construct event processing pipelines
 stdout = MingleEvents::Processors::Pipeline.new([
-  MingleEvents::Processors::PutsPublisher.new
+  MingleEvents::Processors::PutsPublisher.new,
+  GrowlPublisher.new
 ])
 
 # assign processors to project
