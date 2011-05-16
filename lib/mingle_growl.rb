@@ -6,12 +6,43 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   require 'ruby_gntp'
 
   def process_event(event)
-    GNTP.notify({
-                  :app_name => "Mingle Growl",
-                  :title    => event.title,
-                  :text     => event.card_number,
-                  :icon     => "http://www.hatena.ne.jp/users/sn/snaka72/profile.gif",
-                })
+    growl_event = from(event)
+    growl_event.notify
+  end
+
+  private
+  def from(event)
+    event.card? and return GrowlCardChanged.new event
+    Silence.new
+  end
+
+  class GrowlCardChanged
+    def initialize event
+      @event = event
+    end
+
+    def notify
+      GNTP.notify({
+                    :app_name => "Mingle Growl",
+                    :title    => title,
+                    :text     => text,
+                    :icon     => "http://www.hatena.ne.jp/users/sn/snaka72/profile.gif",
+                  })
+    end
+
+    private
+    def title
+      @event.title
+    end
+
+    def text
+      "Something changed"
+    end
+  end
+
+  class Silence
+    def notify
+    end
   end
 end
 
@@ -23,14 +54,14 @@ mingle_access = MingleEvents::MingleBasicAuthAccess.new(
 )
 
 # construct event processing pipelines
-stdout = MingleEvents::Processors::Pipeline.new([
+processors = MingleEvents::Processors::Pipeline.new([
   MingleEvents::Processors::PutsPublisher.new,
   GrowlPublisher.new
 ])
 
 # assign processors to project
 processors_by_project = {
-  'xmail' => [stdout]
+  'xmail' => [processors]
 }
 
 # specify where to store event processing state
