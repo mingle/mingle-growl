@@ -2,6 +2,25 @@ require 'rubygems'
 require 'mingle_events'
 require 'fileutils'
 
+class MingleGrowl
+  def initialize mingle_access, state_folder
+    @mingle_access, @state_folder = mingle_access, state_folder
+  end
+
+  def growl
+    processors = MingleEvents::Processors::Pipeline.new( [
+                                                         MingleEvents::Processors::PutsPublisher.new,
+                                                         GrowlPublisher.new
+                                                        ])
+
+    processors_by_project = {
+      'xmail' => [processors]
+    }
+
+    MingleEvents::Poller.new(@mingle_access, processors_by_project, @state_folder).run_once
+  end
+end
+
 class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   require 'ruby_gntp'
 
@@ -27,7 +46,7 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
                     :title    => title,
                     :text     => text,
                     :icon     => "http://www.hatena.ne.jp/users/sn/snaka72/profile.gif",
-                  })
+                 })
     end
 
     private
@@ -46,27 +65,13 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   end
 end
 
-# specify mingle access
+
 mingle_access = MingleEvents::MingleBasicAuthAccess.new(
   'http://localhost:8080',
   'mira',
   'mira'
 )
 
-# construct event processing pipelines
-processors = MingleEvents::Processors::Pipeline.new([
-  MingleEvents::Processors::PutsPublisher.new,
-  GrowlPublisher.new
-])
-
-# assign processors to project
-processors_by_project = {
-  'xmail' => [processors]
-}
-
-# specify where to store event processing state
 state_folder = File.dirname('bookmark')
 
-# run the poller once.  you'll want to schedule this with cron or something similar
-MingleEvents::Poller.new(mingle_access, processors_by_project, state_folder).run_once
-
+MingleGrowl.new(mingle_access, state_folder).growl
