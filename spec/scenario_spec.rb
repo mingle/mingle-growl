@@ -18,19 +18,22 @@ describe GNTP do
   end
 
   it "can register notification with minimum params" do
-    APP_NAME = 'ingle Growl'
+    APP_NAME = 'Mingle Growl'
+    TITLE = 'Fake title'
+    TEXT = 'Fake text'
 
     GNTP.notify({
                   :app_name => APP_NAME,
-                  :title    => "Fake title",
-                  :text     => "Fake text"
+                  :title    => TITLE,
+                  :text     => TEXT
                 })
 
     [
-      "Application-Name: #{APP_NAME}\r\n",
+     "Application-Name: #{APP_NAME}\r\n",
+     "Notification-Title: #{TITLE}\r\n",
+     "Notification-Text: #{TEXT}\r\n"
     ].each {|expected_text|
       @sended_messages.last.should include(expected_text)
     }
-
   end
 end
