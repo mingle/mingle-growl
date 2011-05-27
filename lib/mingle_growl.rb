@@ -3,18 +3,17 @@ require 'mingle_events'
 require 'fileutils'
 
 class MingleGrowl
-  def initialize mingle_access, state_folder
-    @mingle_access, @state_folder = mingle_access, state_folder
+  def initialize mingle_access, state_folder, project
+    @mingle_access, @state_folder, @project = mingle_access, state_folder, project
   end
 
   def growl
     processors = MingleEvents::Processors::Pipeline.new( [
-                                                         MingleEvents::Processors::PutsPublisher.new,
                                                          GrowlPublisher.new
                                                         ])
 
     processors_by_project = {
-      'xmail' => [processors]
+      @project => [processors]
     }
 
     MingleEvents::Poller.new(@mingle_access, processors_by_project, @state_folder).run_once
@@ -64,14 +63,3 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
   end
 end
-
-
-mingle_access = MingleEvents::MingleBasicAuthAccess.new(
-  'http://localhost:8080',
-  'mira',
-  'mira'
-)
-
-state_folder = File.dirname('bookmark')
-
-MingleGrowl.new(mingle_access, state_folder).growl
