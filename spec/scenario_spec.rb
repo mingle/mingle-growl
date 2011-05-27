@@ -23,18 +23,11 @@ describe "scenarios" do
   end
 
   it "growls the event from mingle" do
-    text = 'Something changed'
-
     mingle_growl.growl
 
     @received_messages.last.should have_application_name 'Mingle Growl'
     @received_messages.last.should have_title 'Story #26 As a user I want this to work'
-
-    [
-     "Notification-Text: #{text}\r\n"
-    ].each {|expected_text|
-      @received_messages.last.should include(expected_text)
-    }
+    @received_messages.last.should have_text 'Something changed'
   end
 
   def mingle_growl
@@ -53,7 +46,11 @@ def have_application_name expected_value
 end
 
 def have_title expected_value
-    MessageMatcher.new('Notification-Title', expected_value)
+  MessageMatcher.new('Notification-Title', expected_value)
+end
+
+def have_text expected_value
+  MessageMatcher.new('Notification-Text', expected_value)
 end
 
 class MessageMatcher
