@@ -49,26 +49,30 @@ describe "scenarios" do
 end
 
 Spec::Matchers.define :have_application_name do |expected_application_name|
+  MESSAGE_HEADER = 'Application-Name'
+
   match do |message|
-    @application_name = message.select {|l| l.include? 'Application-Name' }.first || ''
+    @application_name = message.select {|l| l.include? MESSAGE_HEADER }.first || ''
     @application_name = @application_name.strip
-    @application_name == "Application-Name: #{expected_application_name}"
+    @application_name == "#{MESSAGE_HEADER}: #{expected_application_name}"
   end
 
   failure_message_for_should do |message|
-    "expected GNTP message to have 'Application-Name: #{expected_application_name}' but was '#{@application_name}'"
+    "expected GNTP message to have '{#MESSAGE_HEADER}: #{expected_application_name}' but was '#{@application_name}'"
   end
 end
 
 Spec::Matchers.define :have_title do |expected_title|
+  MESSAGE_HEADER = 'Notification-Title'
+
   match do |message|
-    @title = message.select {|l| l.include? 'Notification-Title' }.first || ''
+    @title = message.select {|l| l.include? MESSAGE_HEADER }.first || ''
     @title = @title.strip
-    @title == "Notification-Title: #{expected_title}"
+    @title == "#{MESSAGE_HEADER}: #{expected_title}"
   end
 
   failure_message_for_should do |message|
-    "expected GNTP message to have 'Notification-Title: #{expected_title}' but was '#{@title}'"
+    "expected GNTP message to have '#{MESSAGE_HEADER}: #{expected_title}' but was '#{@title}'"
   end
 end
 
