@@ -48,31 +48,27 @@ describe "scenarios" do
   end
 end
 
-Spec::Matchers.define :have_application_name do |expected_value|
-  MESSAGE_HEADER = 'Application-Name'
-
-  match do |message|
-    actual_value = message.select {|l| l.include? MESSAGE_HEADER }.first || ''
-    actual_value = actual_value.strip
-    actual_value == "#{MESSAGE_HEADER}: #{expected_value}"
-  end
-
-  failure_message_for_should do |message|
-    "expected GNTP message to have '{#MESSAGE_HEADER}: #{expected_value}' but was '#{actual_value}'"
-  end
+def have_application_name expected_value
+  MessageMatcher.new('Application-Name', expected_value)
 end
 
-Spec::Matchers.define :have_title do |expected_value|
-  MESSAGE_HEADER = 'Notification-Title'
+def have_title expected_value
+    MessageMatcher.new('Notification-Title', expected_value)
+end
 
-  match do |message|
-    @actual_value = message.select {|l| l.include? MESSAGE_HEADER }.first || ''
-    @actual_value = @actual_value.strip
-    @actual_value == "#{MESSAGE_HEADER}: #{expected_value}"
+class MessageMatcher
+  def initialize(message_header, expected_value)
+    @message_header, @expected_value = message_header, expected_value
   end
 
-  failure_message_for_should do |message|
-    "expected GNTP message to have '#{MESSAGE_HEADER}: #{expected_value}' but was '#{@actual_value}'"
+  def matches?(message)
+    @actual_value = message.select {|l| l.include? @message_header }.first || ''
+    @actual_value = @actual_value.strip
+    @actual_value == "#{@message_header}: #{@expected_value}"
+  end
+
+  def failure_message_for_should
+    "expected GNTP message to have '{#@message_header}: #{@expected_value}' but was '#{@actual_value}'"
   end
 end
 
