@@ -23,14 +23,14 @@ describe "scenarios" do
   end
 
   it "growls the event from mingle" do
-    app_name = 'Mingle Growl'
     title = 'Story #26 As a user I want this to work'
     text = 'Something changed'
 
     mingle_growl.growl
 
+    @received_messages.last.should have_application_name 'Mingle Growl'
+
     [
-     "Application-Name: #{app_name}\r\n",
      "Notification-Title: #{title}\r\n",
      "Notification-Text: #{text}\r\n"
     ].each {|expected_text|
@@ -46,6 +46,18 @@ describe "scenarios" do
                                                             )
 
     MingleGrowl.new(mingle_access, File.dirname('bookmark'), 'project1')
+  end
+end
+
+Spec::Matchers.define :have_application_name do |expected_application_name|
+  match do |message|
+    @application_name = message.select {|l| l.include? 'Application-Name' }.first || ''
+    @application_name = @application_name.strip
+    @application_name == "Application-Name: #{expected_application_name}"
+  end
+
+  failure_message_for_should do |message|
+    "expected GNTP message to have 'Application-Name: #{expected_application_name}' but was '#{@application_name}'"
   end
 end
 
