@@ -25,9 +25,11 @@ describe "scenarios" do
   it "growls the event from mingle" do
     mingle_growl.growl
 
-    @received_messages.last.should have_application_name 'Mingle Growl'
-    @received_messages.last.should have_title 'Story #26 As a user I want this to work changed'
-    @received_messages.last.should have_text 'Story Status changed from In QA to Done'
+    notifications.should have(1).items
+
+    notifications.last.should have_application_name 'Mingle Growl'
+    notifications.last.should have_title 'Story #26 As a user I want this to work changed'
+    notifications.last.should have_text 'Story Status changed from In QA to Done'
   end
 
   def mingle_growl
@@ -38,6 +40,10 @@ describe "scenarios" do
                                                             )
 
     MingleGrowl.new(mingle_access, File.dirname('bookmark'), 'project1')
+  end
+
+  def notifications
+    @received_messages.select {|m| m.find {|l| l.include? 'GNTP/1.0 NOTIFY' } }
   end
 end
 
