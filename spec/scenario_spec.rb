@@ -30,7 +30,7 @@ describe "scenarios" do
     notifications.each { |message| message.should have_application_name 'Mingle Growl' }
 
     notifications.first.should have_title 'Story #27 As a user I want to create new things created'
-    notifications.first.find { |l| l.include? 'Notification-Text' }.should be_nil
+    notifications.first.should_not have_header 'Notification-Text'
 
     notifications.last.should have_title 'Story #26 As a user I want this to work changed'
     notifications.last.should have_text 'Story Status changed from In QA to Done'
@@ -76,6 +76,12 @@ class MessageMatcher
 
   def failure_message_for_should
     "expected GNTP message to have '{#@message_header}: #{@expected_value}' but was '#{@actual_value}'"
+  end
+end
+
+Spec::Matchers.define :have_header do |header|
+  match do |message|
+    message.find { |l| l.include? header }
   end
 end
 
