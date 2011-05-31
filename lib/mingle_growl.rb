@@ -6,7 +6,7 @@ module Notifiable
   def notify
     GNTP.notify({
                   :app_name => "Mingle Growl",
-                  :title    => title,
+                  :title    => @event.title,
                   :text     => text
                 })
   end
@@ -55,10 +55,6 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     private
-    def title
-      @event.title
-    end
-
     def text() end
   end
 
@@ -70,10 +66,6 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     private
-    def title
-      @event.title
-    end
-
     def text() end
   end
 
@@ -85,10 +77,6 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     private
-    def title
-      @event.title
-    end
-
     def text
       "#{change.name} changed from #{change.old_value} to #{change.new_value}"
     end
@@ -106,10 +94,6 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     private
-    def title
-      @event.title
-    end
-
     def text
       "Name changed from #{change.old_value}"
     end
@@ -127,10 +111,6 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     private
-    def title
-      @event.title
-    end
-
     def text() "The description was changed" end
   end
 end
