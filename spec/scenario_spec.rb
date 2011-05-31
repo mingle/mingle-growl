@@ -34,6 +34,9 @@ describe "scenarios" do
 
     notifications[1].should have_title 'Story #26 As a user I want this to work changed'
     notifications[1].should have_text 'Story Status changed from In QA to Done'
+
+    notifications[2].should have_title 'Story #32 As a user I want to change things changed'
+    notifications[2].should have_text 'Name changed from As a user I want things to change'
   end
 
   def mingle_growl

@@ -104,9 +104,12 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     def text
-
+      "Name changed from #{change.old_value}"
     end
 
+    def change
+      @event.changes.first
+    end
   end
 end
 
