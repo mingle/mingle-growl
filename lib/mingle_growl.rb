@@ -30,7 +30,31 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
 
   private
   def from(event)
-    GrowlCardChanged.new event
+    event.categories.include? MingleEvents::Category::PROPERTY_CHANGE and return GrowlCardChanged.new event
+    event.categories.include? MingleEvents::Category::CARD_CREATION and return GrowlCardCreated.new event
+  end
+
+  class GrowlCardCreated
+    def initialize event
+      @event = event
+    end
+
+    def notify
+      GNTP.notify({
+                    :app_name => "Mingle Growl",
+                    :title    => title,
+                    :text     => text
+                 })
+    end
+
+    private
+    def title
+      @event.title
+    end
+
+    def text
+
+    end
   end
 
   class GrowlCardChanged

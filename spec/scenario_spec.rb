@@ -25,9 +25,13 @@ describe "scenarios" do
   it "growls the event from mingle" do
     mingle_growl.growl
 
-    notifications.should have(1).items
+    notifications.should have(2).items
 
-    notifications.last.should have_application_name 'Mingle Growl'
+    notifications.each { |message| message.should have_application_name 'Mingle Growl' }
+
+    notifications.first.should have_title 'Story #27 As a user I want to create new things created'
+    notifications.first.find { |l| l.include? 'Notification-Text' }.should be_nil
+
     notifications.last.should have_title 'Story #26 As a user I want this to work changed'
     notifications.last.should have_text 'Story Status changed from In QA to Done'
   end
@@ -98,6 +102,31 @@ def events
         </change>
       </changes>
      </content>
+  </entry>
+  <entry>
+    <id>https://mingle05.thoughtworks.com/projects/studios_technical_solutions/events/index/41900</id>
+    <title>Story #27 As a user I want to create new things created</title>
+    <category term="card" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <category term="card-creation" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <category term="card-type-change" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <category term="name-change" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <content type="application/vnd.mingle+xml">
+      <changes xmlns="http://www.thoughtworks-studios.com/ns/mingle">
+        <change type="card-creation"/>
+        <change type="card-type-change">
+          <old_value nil="true"></old_value>
+          <new_value>
+            <card_type url="https://mingle05.thoughtworks.com/api/v2/projects/studios_technical_solutions/card_types/184.xml">
+              <name>Story</name>
+            </card_type>
+          </new_value>
+        </change>
+        <change type="name-change">
+          <old_value nil="true"></old_value>
+          <new_value>Story #27 As a user I want to create new things created</new_value>
+        </change>
+      </changes>
+    </content>
   </entry>
 </feed>
 EVENTS
