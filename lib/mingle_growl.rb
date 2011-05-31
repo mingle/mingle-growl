@@ -30,8 +30,7 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
 
   private
   def from(event)
-    event.card? and return GrowlCardChanged.new event
-    Silence.new
+    GrowlCardChanged.new event
   end
 
   class GrowlCardChanged
@@ -43,8 +42,7 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
       GNTP.notify({
                     :app_name => "Mingle Growl",
                     :title    => title,
-                    :text     => text,
-                    :icon     => "http://www.hatena.ne.jp/users/sn/snaka72/profile.gif",
+                    :text     => text
                  })
     end
 
@@ -54,12 +52,11 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     end
 
     def text
-      "Something changed"
+      "#{change.name} changed from #{change.old_value} to #{change.new_value}"
     end
-  end
 
-  class Silence
-    def notify
+    def change
+      @event.changes.first
     end
   end
 end
