@@ -2,6 +2,16 @@ require 'rubygems'
 require 'mingle_events'
 require 'fileutils'
 
+module Notifiable
+  def notify
+    GNTP.notify({
+                  :app_name => "Mingle Growl",
+                  :title    => title,
+                  :text     => text
+                })
+  end
+end
+
 class MingleGrowl
   def initialize mingle_access, state_folder, project
     @mingle_access, @state_folder, @project = mingle_access, state_folder, project
@@ -36,16 +46,10 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   end
 
   class GrowlCardCreated
+    include Notifiable
+
     def initialize event
       @event = event
-    end
-
-    def notify
-      GNTP.notify({
-                    :app_name => "Mingle Growl",
-                    :title    => title,
-                    :text     => text
-                 })
     end
 
     private
@@ -59,16 +63,10 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   end
 
   class GrowlCardChanged
+    include Notifiable
+
     def initialize event
       @event = event
-    end
-
-    def notify
-      GNTP.notify({
-                    :app_name => "Mingle Growl",
-                    :title    => title,
-                    :text     => text
-                 })
     end
 
     private
@@ -86,16 +84,10 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   end
 
   class GrowlNameChanged
+    include Notifiable
+
     def initialize event
       @event = event
-    end
-
-    def notify
-      GNTP.notify({
-                    :app_name => "Mingle Growl",
-                    :title    => title,
-                    :text     => text
-                 })
     end
 
     private
