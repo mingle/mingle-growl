@@ -41,24 +41,13 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
   private
   def from(event)
     event.categories.include? MingleEvents::Category::PROPERTY_CHANGE and return GrowlCardChanged.new event
-    event.categories.include? MingleEvents::Category::CARD_CREATION and return GrowlCardCreated.new event
+    event.categories.include? MingleEvents::Category::CARD_CREATION and return GrowlCardEvent.new event
     event.categories.include? MingleEvents::Category::NAME_CHANGE and return GrowlNameChanged.new event
-    event.categories.include? MingleEvents::Category::CARD_DELETION and return GrowlCardDeleted.new event
+    event.categories.include? MingleEvents::Category::CARD_DELETION and return GrowlCardEvent.new event
     event.categories.include? MingleEvents::Category::DESCRIPTION_CHANGE and return GrowlDescriptionChange.new event
   end
 
-  class GrowlCardCreated
-    include Notifiable
-
-    def initialize event
-      @event = event
-    end
-
-    private
-    def text() end
-  end
-
-  class GrowlCardDeleted
+  class GrowlCardEvent
     include Notifiable
 
     def initialize event
