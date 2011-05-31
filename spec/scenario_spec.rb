@@ -25,15 +25,15 @@ describe "scenarios" do
   it "growls the event from mingle" do
     mingle_growl.growl
 
-    notifications.should have(2).items
+    notifications.should have(3).items
 
     notifications.each { |message| message.should have_application_name 'Mingle Growl' }
 
-    notifications.first.should have_title 'Story #27 As a user I want to create new things created'
-    notifications.first.should_not have_header 'Notification-Text'
+    notifications[0].should have_title 'Story #27 As a user I want to create new things created'
+    notifications[0].should_not have_header 'Notification-Text'
 
-    notifications.last.should have_title 'Story #26 As a user I want this to work changed'
-    notifications.last.should have_text 'Story Status changed from In QA to Done'
+    notifications[1].should have_title 'Story #26 As a user I want this to work changed'
+    notifications[1].should have_text 'Story Status changed from In QA to Done'
   end
 
   def mingle_growl
@@ -90,6 +90,20 @@ def events
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:mingle="http://www.thoughtworks-studios.com/ns/mingle">
   <entry>
+    <id>https://mingle.events.com/projects/project1/events/index/41888</id>
+    <title>Story #32 As a user I want to change things changed</title>
+    <category term="card" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <category term="name-change" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <content type="application/vnd.mingle+xml">
+      <changes xmlns="http://www.thoughtworks-studios.com/ns/mingle">
+        <change type="name-change">
+          <old_value>As a user I want things to change</old_value>
+          <new_value>As a user I want to change things</new_value>
+        </change>
+      </changes>
+    </content>
+  </entry>
+  <entry>
     <id>http://mingle.events.com/projects/project1/events/index/413027</id>
     <title>Story #26 As a user I want this to work changed</title>
     <category term="card" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
@@ -110,7 +124,7 @@ def events
      </content>
   </entry>
   <entry>
-    <id>https://mingle05.thoughtworks.com/projects/studios_technical_solutions/events/index/41900</id>
+    <id>https://mingle.events.com/projects/project1/events/index/41900</id>
     <title>Story #27 As a user I want to create new things created</title>
     <category term="card" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
     <category term="card-creation" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
