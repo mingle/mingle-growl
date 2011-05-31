@@ -44,6 +44,7 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     event.categories.include? MingleEvents::Category::CARD_CREATION and return GrowlCardCreated.new event
     event.categories.include? MingleEvents::Category::NAME_CHANGE and return GrowlNameChanged.new event
     event.categories.include? MingleEvents::Category::CARD_DELETION and return GrowlCardDeleted.new event
+    event.categories.include? MingleEvents::Category::DESCRIPTION_CHANGE and return GrowlDescriptionChange.new event
   end
 
   class GrowlCardCreated
@@ -116,6 +117,21 @@ class GrowlPublisher < MingleEvents::Processors::AbstractNoRetryProcessor
     def change
       @event.changes.first
     end
+  end
+
+  class GrowlDescriptionChange
+    include Notifiable
+
+    def initialize event
+      @event = event
+    end
+
+    private
+    def title
+      @event.title
+    end
+
+    def text() "The description was changed" end
   end
 end
 

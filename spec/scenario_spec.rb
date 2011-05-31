@@ -25,7 +25,7 @@ describe "scenarios" do
   it "growls the event from mingle" do
     mingle_growl.growl
 
-    notifications.should have(4).items
+    notifications.should have(5).items
 
     notifications.each { |message| message.should have_application_name 'Mingle Growl' }
 
@@ -40,6 +40,9 @@ describe "scenarios" do
 
     notifications[3].should have_title "Bug #2 I didn't want this deleted"
     notifications[3].should_not have_header 'Notification-Text'
+
+    notifications[4].should have_title "Bug #21 I described this differently changed"
+    notifications[4].should have_text "The description was changed"
   end
 
   def mingle_growl
@@ -95,6 +98,18 @@ def events
   <<EVENTS
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xmlns:mingle="http://www.thoughtworks-studios.com/ns/mingle">
+  <entry>
+    <id>https://mingle.events.com/projects/project1/events/index/45000</id>
+    <title>Bug #21 I described this differently changed</title>
+    <category term="card" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <category term="description-change" scheme="http://www.thoughtworks-studios.com/ns/mingle#categories"/>
+    <content type="application/vnd.mingle+xml">
+      <changes xmlns="http://www.thoughtworks-studios.com/ns/mingle">
+        <change type="description-change">
+        </change>
+      </changes>
+    </content>
+  </entry>
   <entry>
     <id>https://mingle.events.com/projects/project1/events/index/45000</id>
     <title>Bug #2 I didn't want this deleted</title>
